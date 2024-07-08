@@ -1,6 +1,7 @@
 # СберИндекс
 
 library(tidyverse)
+library(readxl)
 
 setwd('C:/Users/yadon/Skillbox/R/TrustUs_R/data/СберИндекс')
 
@@ -34,7 +35,8 @@ month_data <- function(data) {
   for (i in data) {
     month_str <- c(month_str, month_v[as.integer(i)])
   }
-  return(month_str)
+  month_f <- factor(month_str, levels = month_v)
+  return(month_f)
 }
 
 
@@ -54,38 +56,23 @@ turist <- turist[turist$Год == 2020, ]
 
 # групировка данных по региону, году и месяцу
 
+cash_of <- cash_of %>% group_by(Регион, Месяц, Год) %>% summarise(`Индекс.БП` = median(Значение))
 
-test <- index
-test$Значение <- as.numeric(test$Значение)
+index$Значение <- as.numeric(index$Значение)
+index <- index %>% group_by(Регион, Месяц, Год) %>% summarise(`Индекс.ПА` = median(Значение))
 
-
-test <- test %>% group_by(Регион, Месяц, Год) %>% summarise(`Индекс.БП` = median(Значение))
-
-test <- test %>% group_by(`Месяц`) %>% summarise(`Регион` = Регион,
-                                                       `Год` = Год,
-                                                       `Месяц` = Месяц,
-                                                       `Индекс.БП` = median(Значение))
-
-cash_of <- cash_of %>% group_by(Регион) %>% summarise(`Регион` = Регион,
-                                                                  `Год` = Год,
-                                                                  `Месяц` = Месяц, 
-                                                                  `Индекс.БП` = Значение)
-                                                                    
-
-index <- index %>% group_by(Регион) %>% summarise(`Регион` = Регион,
-                                                  `Год` = median(Год),
-                                                  `Индекс.ПА` = median(Значение))
-
-turist <- turist %>% group_by(Регион) %>% summarise(`Регион` = Регион,
-                                                    `Год` = Год,
-                                                    `Месяц` = Месяц,
-                                                    `Количество.ВТ` = Значение)
+turist <- turist %>% group_by(Регион, Месяц, Год) %>% summarise(`Количество.ВТ` = median(Значение))
 
 
 sum(!complete.cases(cash_of))
 sum(!complete.cases(index))
 sum(!complete.cases(turist))
 
+# объединение в один датафрейм
+
+df_domklick <- inner_join(cash_of, index, by = c('Регион', 'Месяц', 'Год'))
+df_domklick <- inner_join(df_domklick, turist, by = c('Регион', 'Месяц', 'Год'))
+df_err <- df_domklick[!complete.cases(df_domklick), ]
 # ДомКлик
 
 path_ <- 'C:/Users/yadon/Skillbox/R/TrustUs_R/data/ДомКлик/Рейтинг регионов по количеству заявок на кредит/'
@@ -96,8 +83,6 @@ month_list <- strsplit(list_file, ' ')
 for (i in month_list) {
   my_month <- c(my_month, i[1])
 }
-
-library(readxl)
 
 
 file_name <- c()
