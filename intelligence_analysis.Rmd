@@ -1,0 +1,22 @@
+---
+title: "R Notebook"
+auther: 'Ядонист Роман'
+output: html_notebook
+---
+
+Загрузка данных
+
+```{r echo=FALSE}
+setwd('C:/Users/yadon/Skillbox/R/TrustUs_R/data')
+library('readxl')
+df <- read_excel('total.xlsx')
+```
+
+Выведим описательные статистики для данных из СберИндекс
+
+```{r}
+summary(df$Индекс.БП)
+summary(df$Индекс.ПА)
+summary(df$Количество.ВТ)
+```
+
