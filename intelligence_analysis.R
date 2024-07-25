@@ -11,11 +11,15 @@ df_for_hist <- df %>% group_by(Месяц) %>% summarise(Индекс.БП = rou
 df_for_hist$Месяц <- factor(df_for_hist$Месяц, levels = c('январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 
                                                           'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'))
 
-ggplot(data = df, aes(x = Месяц, y = Индекс.БП)) + geom_bar()
+ggplot(data = df_for_hist, aes(x = Месяц, y = Индекс.БП)) + geom_col() + ylim(0, 100) 
 
-?group_by?group_bygeom_bar()
-?geom_line
-str(df_for_hist)
+ggplot(data = df_for_hist, aes(x = Месяц, y = Индекс.ПА)) + geom_col()
 
-df_errors <- df[!complete.cases(df), ]
+ggplot(data = df_for_hist, aes(x = Месяц, y = Количество.ВТ)) + geom_col()
 
+
+three <- df %>% select(Индекс.БП, Индекс.ПА, Количество.ВТ)
+BP <- ggplot(data = df, aes(y = Индекс.БП)) + geom_boxplot() + facet_wrap(~Месяц)
+BP <- boxplot(df$Индекс.БП ~ df$Месяц)
+
+df_err <- df[df$Индекс.БП %in% BP$out, ]
