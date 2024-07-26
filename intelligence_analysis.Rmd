@@ -82,10 +82,30 @@ ggplot(data = df_for_graf, aes(x = Месяц, y = Количество.ВТ)) +
 начало года показало увеличения количества внутрених туристов. Так же конец лето и начало 
 осень идет увеличения притока внутрених туристов.
 
+Построим графики boxplot для показателей СберИндекс.
 
-```{r}
-ggplot(data = df, aes(y = Индекс.БП?????)) + geom_boxplot() + facet_wrap(~Месяц)
+```{r echo=FALSE}
+ggplot(data = df, aes(y = Индекс.БП)) + geom_boxplot() + facet_wrap(~Месяц)
+ggplot(data = df, aes(y = Индекс.ПА)) + geom_boxplot() + facet_wrap(~Месяц)
+ggplot(data = df, aes(y = Количество.ВТ)) + geom_boxplot() + facet_wrap(~Месяц)
 ```
+
+Проверим есть ли в показателях СберИндекс нетипичные значения.
+
+```{r echo=FALSE, include=FALSE}
+index_bp <- boxplot(df$Индекс.БП ~ df$Месяц)
+df_out_index_bp <- df[df$Индекс.БП %in% index_bp$out, ]
+
+index_pa <- boxplot(df$Индекс.ПА ~ df$Месяц)
+df_out_index_pa <- df[df$Индекс.ПА %in% index_pa$out, ]
+
+count_vt <- boxplot(df$Количество.ВТ ~ df$Месяц)
+df_out_count_vt <- df[df$Количество.ВТ %in% count_vt$out, ]
+```
+
+
+
+
 
 
 

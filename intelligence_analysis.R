@@ -18,8 +18,45 @@ ggplot(data = df_for_hist, aes(x = Месяц, y = Индекс.ПА)) + geom_co
 ggplot(data = df_for_hist, aes(x = Месяц, y = Количество.ВТ)) + geom_col()
 
 
-three <- df %>% select(Индекс.БП, Индекс.ПА, Количество.ВТ)
 BP <- ggplot(data = df, aes(y = Индекс.БП)) + geom_boxplot() + facet_wrap(~Месяц)
-BP <- boxplot(df$Индекс.БП ~ df$Месяц)
 
-df_err <- df[df$Индекс.БП %in% BP$out, ]
+index_bp <- boxplot(df$Индекс.БП ~ df$Месяц)
+df_out_index_bp <- df[df$Индекс.БП %in% index_bp$out, ]
+
+index_pa <- boxplot(df$Индекс.ПА ~ df$Месяц)
+df_out_index_pa <- df[df$Индекс.ПА %in% index_pa$out, ]
+
+count_vt <- boxplot(df$Количество.ВТ ~ df$Месяц)
+df_out_count_vt <- df[df$Количество.ВТ %in% count_vt$out, ]
+
+
+extra <- function(data) {
+  iqr <- IQR(data)
+  q1 <- quantile(data, 0.25)
+  q3 <- quantile(data, 0.75)
+  lower_b <- q1 - 1.5 * iqr
+  upper_b <- q3 + 1.5 * iqr
+  return(c(lower_b, upper_b))
+}
+
+test_pa <- extra(df$Индекс.ПА)
+df_test_pa <- df[df$Индекс.ПА < test_pa[1] | df$Индекс.ПА > test_pa[2], ]
+test_pa[1]
+test_pa[2]
+
+test_bp <- extra(df$Индекс.БП)
+df_test_bp <- df[df$Индекс.БП < test_bp[1] | df$Индекс.БП > test_bp[2], ]
+test_bp[1]
+test_bp[2]
+
+test_vt <- extra(df$Количество.ВТ)
+df_test_vt <- df[df$Количество.ВТ < test_vt[1] | df$Количество.ВТ > test_vt[2], ]
+test_vt[1]
+test_vt[2]
+
+iqr <- IQR(df$Количество.ВТ)
+q1 <- quantile(df$Количество.ВТ, 0.25)
+q3 <- quantile(df$Количество.ВТ, 0.75)
+lower_b <- q1 - 1.5 * iqr
+upper_b <- q3 + 1.5 * iqr
+test <- df[df$Количество.ВТ < lower_b | df$Количество.ВТ > upper_b, ]
