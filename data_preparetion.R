@@ -471,5 +471,3 @@ library(openxlsx)
 setwd('C:/Users/yadon/Skillbox/R/TrustUs_R/data/')
 
 write.xlsx(df_total, 'total.xlsx')
-
-WriteXLS(df_total, 'total.xlsx')
