@@ -52,6 +52,18 @@ df_out_index_bp <- df[df$Индекс.БП < test_bp[1] | df$Индекс.БП >
 test_vt <- extra(df$Количество.ВТ)
 df_out_count_vt <- df[df$Количество.ВТ < test_vt[1] | df$Количество.ВТ > test_vt[2], ]
 
+df_top_pa <- df %>% 
+  group_by(Регион) %>% 
+  summarise(`Индекс.ПА` = round(mean(Индекс.ПА), 1))
 
-df %>% top_n(30)
+df_top_pa <- arrange(df_index_pa, desc(Индекс.ПА)) %>% top_n(30)
 
+df_top_bp <- df %>% 
+  group_by(Регион) %>% 
+  summarise(`Индекс.БП` = round(mean(Индекс.БП), 1))
+
+df_top_bp <- arrange(df_top_bp, desc(Индекс.БП)) %>% top_n(30)
+
+df_top_bp_pa <- inner_join(df_top_bp, df_top_pa, by = 'Регион')
+
+df_top <- df[df$Регион %in% df_top$Регион, ]
