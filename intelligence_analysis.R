@@ -1,4 +1,4 @@
-setwd('C:/Users/yadon/Skillbox/R/TrustUs_R/data')
+setwd('/Users/yadonistroman/Documents/GitHub/trustus-r/data')
 library(tidyverse)
 library(readxl)
 df <- read_excel('total.xlsx')
@@ -23,17 +23,6 @@ str(BP)
 BP$layers$geom$extra_params
 ?geom_boxplot
 
-
-index_bp <- boxplot(df$Индекс.БП ~ df$Месяц)
-df_out_index_bp <- df[df$Индекс.БП %in% index_bp$out, ]
-
-index_pa <- boxplot(df$Индекс.ПА ~ df$Месяц)
-df_out_index_pa <- df[df$Индекс.ПА %in% index_pa$out, ]
-
-count_vt <- boxplot(df$Количество.ВТ ~ df$Месяц)
-df_out_count_vt <- df[df$Количество.ВТ %in% count_vt$out, ]
-
-
 extra <- function(data) {
   iqr <- IQR(data)
   q1 <- quantile(data, 0.25)
@@ -56,7 +45,7 @@ df_top_pa <- df %>%
   group_by(Регион) %>% 
   summarise(`Индекс.ПА` = round(mean(Индекс.ПА), 1))
 
-df_top_pa <- arrange(df_index_pa, desc(Индекс.ПА)) %>% top_n(30)
+df_top_pa <- arrange(df_top_pa, desc(Индекс.ПА)) %>% top_n(30)
 
 df_top_bp <- df %>% 
   group_by(Регион) %>% 
@@ -66,4 +55,10 @@ df_top_bp <- arrange(df_top_bp, desc(Индекс.БП)) %>% top_n(30)
 
 df_top_bp_pa <- inner_join(df_top_bp, df_top_pa, by = 'Регион')
 
-df_top <- df[df$Регион %in% df_top$Регион, ]
+df_top <- df[df$Регион %in% df_top_bp_pa$Регион, ]
+
+df_top <- df_top[df_top$Количество.ВТ > 0, ]
+
+target_v <- c('калининградская область', 'камчатский край', 'кировская область', 'нижегородская область')
+df_final <- df[df$Регион %in% target_v, ]
+
