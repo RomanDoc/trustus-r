@@ -71,3 +71,11 @@ ggplot(data = df_final, aes(x = Количество.ВТ, y = Индекс.ПА
        y = 'Индекс безналичных платежей (50%)')
 
 cor.test(df_final$Количество.ВТ, df_final$Индекс.ПА)
+
+df_ipot_cred <- df_final %>% select(Регион, `Всего одобренных заявок`, `Всего ипотечных сделок`)
+
+func_ever <- function(df) {
+  if (grepl('-', df)) {
+    
+  }
+}
