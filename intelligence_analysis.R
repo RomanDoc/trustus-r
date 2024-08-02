@@ -74,8 +74,48 @@ cor.test(df_final$Количество.ВТ, df_final$Индекс.ПА)
 
 df_ipot_cred <- df_final %>% select(Регион, `Всего одобренных заявок`, `Всего ипотечных сделок`)
 
-func_ever <- function(df) {
-  if (grepl('-', df)) {
-    
-  }
+df_ipot_cred$`Всего одобренных заявок` <- gsub(' ', '', df_ipot_cred$`Всего одобренных заявок`)
+df_ipot_cred$`Всего ипотечных сделок` <- gsub(' ', '', df_ipot_cred$`Всего ипотечных сделок`)
+df_ipot_cred$`Всего ипотечных сделок`  <- gsub('>', '', df_ipot_cred$`Всего ипотечных сделок`)
+cred_list <- strsplit(df_ipot_cred$`Всего одобренных заявок`, '-')
+ipot_list <- strsplit(df_ipot_cred$`Всего ипотечных сделок`, '-')
+
+cred_v <- c()
+for (i in cred_list) {
+  cred_v <- c(cred_v, i[1])
 }
+df_ipot_cred$`Всего одобренных заявок` <- as.numeric(cred_v)
+
+ipot_v <- c()
+for (i in ipot_list) {
+  ipot_v <- c(ipot_v, i[1])
+}
+df_ipot_cred$`Всего ипотечных сделок` <- as.numeric(ipot_v)
+
+cor.test(df_ipot_cred$`Всего одобренных заявок`, df_ipot_cred$`Всего ипотечных сделок`)
+
+ggplot(data = df_ipot_cred, aes(x = `Всего одобренных заявок`, y = `Всего ипотечных сделок`)) +
+  geom_point()
+
+cor.test(df_final$Индекс.БП, df_final$`Онлайн-заявки`)
+
+ggplot(data = df_final, aes(x = Индекс.БП, y = `Онлайн-заявки`)) +
+  geom_point()
+
+season_v <- rep(c('зима', 'весна', 'лето', 'осень'), each=3)
+season_v <- season_v[2:12]
+season_v <- c(season_v, season_v[1])
+season_v <- rep(season_v, 4)
+print(season_v)
+
+df_final <- df_final %>% add_column('Сезон' = season_v, .before = 'Квартал')
+df_final$Сезон <- factor(df_final$Сезон, levels = c('зима', 'весна', 'лето', 'осень'))
+
+ggplot(data = df_final, aes(x = `Всего ипотечных сделок`, fill = Сезон)) + 
+  geom_bar() + 
+  theme_bw() +
+  facet_wrap(~Сезон) +
+  ggtitle('График количества ипотечных сделок \nпо временам года') +
+  xlab('Диапазон ипотечных сделок в месяц') +
+  ylab('Количество диапазонов')
+  
