@@ -135,3 +135,19 @@ ggplot(data = df_final, aes(y = `Офлайн-заявки`)) +
 
 chisq.test(df_final$`Онлайн-заявки`, df_final$Сезон)
 ?fisher.test
+
+ggplot(data = df_final, aes(y = `Доля сделок, вторичка`)) + 
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap(~Сезон) +
+  ggtitle('График распределния доли ипотечных сделок \nна вторичке по временам года') +
+  ylab('Доля ипотечных сделок, вторичка')
+
+ggplot(data = df_final, aes(y = `Доля сделок, первичка`)) + 
+  geom_boxplot() +
+  theme_bw() +
+  facet_wrap(~Сезон) +
+  ggtitle('График распределния доли ипотечных сделок \nна вторичке по временам года') +
+  ylab('Доля ипотечных сделок, вторичка')
+
+chisq.test(df_final$`Доля сделок, вторичка`, df_final$Сезон)
