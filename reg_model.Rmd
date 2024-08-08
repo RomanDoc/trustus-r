@@ -1,0 +1,25 @@
+---
+title: "Регрессионая модель"
+author: "Ядонист Роман"
+output:
+  html_document:
+    df_print: paged
+---
+
+Загрузим данные
+```{r echo=FALSE, include=FALSE}
+setwd('/Users/yadonistroman/Documents/GitHub/trustus-r/data')
+library(tidyverse)
+library(readxl)
+df <- read_excel('final.xlsx')
+```
+
+1. Помтроим регрессионную модель, которая позволяет выяснить:
+ - каким образом потребительская активность зависит от средней заработной платы в регионе, 
+числа активных абонентов беспроводного наземного фиксированного доступа к сети Интернет и
+уровня безработицы населения.
+```{r echo=FALSE}
+
+```
+
+

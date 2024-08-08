@@ -151,3 +151,10 @@ ggplot(data = df_final, aes(y = `Доля сделок, первичка`)) +
   ylab('Доля ипотечных сделок, вторичка')
 
 chisq.test(df_final$`Доля сделок, вторичка`, df_final$Сезон)
+
+library(openxlsx)
+?write.xlsx
+
+setwd('/Users/yadonistroman/Documents/GitHub/trustus-r/data')
+
+write.xlsx(df_final, 'final.xlsx')
