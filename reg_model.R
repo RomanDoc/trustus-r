@@ -3,6 +3,11 @@ library(tidyverse)
 library(readxl)
 df <- read_excel('final.xlsx')
 
+# 1
+
+mod_reg_pa <- lm(data = df, Индекс.ПА ~ `Среднемесячная з.п.` + `Число абонентов` + `Уровень безработицы`)
+summary(mod_reg_pa)
+
 df <- df %>% mutate(`Онлайн-заявки dummy` = ifelse(`Онлайн-заявки` > `Офлайн-заявки`, 1, 0))
 
 
