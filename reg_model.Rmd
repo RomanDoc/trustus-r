@@ -4,6 +4,8 @@ author: "Ядонист Роман"
 output:
   html_document:
     df_print: paged
+  word_document: default
+  pdf_document: default
 ---
 
 Загрузим данные
@@ -11,7 +13,18 @@ output:
 setwd('/Users/yadonistroman/Documents/GitHub/trustus-r/data')
 library(tidyverse)
 library(readxl)
-df <- read_excel('final.xlsx')
+library(stargazer)
+df <- read_excel('total.xlsx')
+```
+
+Добавим столбец с временем года
+```{r echo=FALSE, include=FALSE}
+season_v <- rep(c('зима', 'весна', 'лето', 'осень'), each=3)
+season_v <- season_v[2:12]
+season_v <- c(season_v, season_v[1])
+season_v <- rep(season_v, 83)
+
+df <- df %>% add_column('Сезон' = season_v, .before = 'Квартал')
 ```
 
 1. Помтроим регрессионную модель, которая позволяет выяснить:
@@ -19,8 +32,21 @@ df <- read_excel('final.xlsx')
 числа активных абонентов беспроводного наземного фиксированного доступа к сети Интернет и
 уровня безработицы населения.
 ```{r echo=FALSE}
-mod_reg_pa <- lm(data = df, Индекс.ПА ~ `Среднемесячная з.п.` + `Число абонентов` + `Уровень безработицы`)
+mod_reg_pa <- lm(data = df, Индекс.ПА ~ `Среднемесячная з.п.` + 
+                   `Число абонентов` + `Уровень безработицы` + Сезон)
 summary(mod_reg_pa)
 ```
+ - каким образом доля безналичных платежей в торговом обороте зависит от средней заработной 
+платы в регионе, числа активных абонентов беспроводного наземного фиксированного доступа к 
+сети Интернет и уровня безработицы населения.
+```{r echo=FALSE, include=FALSE}
+mod_reg_bp <- lm(data = df, Индекс.БП ~ `Среднемесячная з.п.` + `Число абонентов` + `Уровень безработицы` + Сезон)
+summary(mod_reg_bp)
+stargazer(mod_reg_bp, type = 'text')
+```
+```{r echo=FALSE}
+stargazer(mod_reg_bp, type = 'text')
+```
+
 
 

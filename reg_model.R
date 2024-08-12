@@ -1,15 +1,32 @@
 setwd('/Users/yadonistroman/Documents/GitHub/trustus-r/data')
 library(tidyverse)
 library(readxl)
-df <- read_excel('final.xlsx')
+df <- read_excel('total.xlsx')
+
+# добавим столбец сезон
+
+season_v <- rep(c('зима', 'весна', 'лето', 'осень'), each=3)
+season_v <- season_v[2:12]
+season_v <- c(season_v, season_v[1])
+season_v <- rep(season_v, 83)
+
+df <- df %>% add_column('Сезон' = season_v, .before = 'Квартал')
+df$Сезон <- factor(df$Сезон, levels = c('зима', 'весна', 'лето', 'осень'))
 
 # 1
+str(df)
 
-mod_reg_pa <- lm(data = df, Индекс.ПА ~ `Среднемесячная з.п.` + `Число абонентов` + `Уровень безработицы`)
+mod_reg_pa <- lm(data = df, Индекс.ПА ~ `Среднемесячная з.п.` + `Число абонентов` + `Уровень безработицы` + Сезон)
 summary(mod_reg_pa)
+
+mod_reg_bp <- lm(data = df, Индекс.БП ~ `Среднемесячная з.п.` + `Число абонентов` + `Уровень безработицы` + Сезон)
+summary(mod_reg_bp)
+
+# 2
 
 df <- df %>% mutate(`Онлайн-заявки dummy` = ifelse(`Онлайн-заявки` > `Офлайн-заявки`, 1, 0))
 
+# 3
 
 df_ipot <- df %>% select(Регион, `Всего ипотечных сделок`)
 df_ipot$`Всего ипотечных сделок` <- gsub(' ', '', df_ipot$`Всего ипотечных сделок`)
@@ -25,3 +42,28 @@ df_ipot$`Всего ипотечных сделок` <- as.numeric(ipot_v)
 df_ipot <- df_ipot %>% mutate(`Ипотечые сделки dummy` = ifelse(`Всего ипотечных сделок` >= 500, 1, 0))
 
 df$`Ипотечые сделки dummy` <- df_ipot$`Ипотечые сделки dummy`
+
+# 4
+
+mod_lreg_online <- glm(data = df, `Онлайн-заявки dummy` ~ `Среднемесячная з.п.` + 
+                         `Число абонентов` + 
+                         `Уровень безработицы` +
+                         Сезон, 
+                       family = 'binomial')
+summary(mod_lreg_online)
+exp(coef(mod_lreg_online))
+
+# 5
+
+mod_lreg_ipot <- glm(data = df, `Ипотечые сделки dummy` ~ `Среднемесячная з.п.` + 
+                         `Число абонентов` + 
+                         `Уровень безработицы` +
+                         Сезон, 
+                       family = 'binomial')
+summary(mod_lreg_ipot)
+exp(coef(mod_lreg_ipot))
+
+
+install.packages('stargazer')
+library(stargazer)
+stargazer(mod_lreg_ipot)
