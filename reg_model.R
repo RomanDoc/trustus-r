@@ -65,5 +65,11 @@ exp(coef(mod_lreg_ipot))
 
 
 install.packages('stargazer')
-library(stargazer)
+
 stargazer(mod_lreg_ipot)
+
+
+small <- df[, c(6, 7, 8)]
+cor(small)
+fitted_v <- mod_lreg_online$fitted.values
+print(fitted_v)
