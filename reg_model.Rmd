@@ -18,6 +18,7 @@ library(readxl)
 library(stargazer)
 library(lmtest)
 library(sandwich)
+library(pROC)
 df <- read_excel('total.xlsx')
 ```
 
@@ -256,6 +257,26 @@ plot(mod_reg_bp, 5)
 
 Из графиков видно, что влиятельных значений нет.
 
+2. Проверка качества логистической регрессии.
+Проверим качества моделей с помощью ROC-AUC.
+ - проверка качества модели по предсказанию доли онлайн-заявок
+```{r echo=FALSE, include=FALSE}
+roc_online <- roc(df$`Онлайн-заявки dummy` ~ mod_lreg_online$fitted.values)
+```
+```{r echo=FALSE}
+roc_online$auc
+```
+
+
+ - проверка качества модели по предсказанию активности оформления ипотечных сделок
+```{r echo=FALSE, include=FALSE}
+roc_ipot <- roc(df$`Ипотечые сделки dummy` ~ mod_lreg_ipot$fitted.values)
+```
+```{r echo=FALSE}
+roc_ipot$auc
+```
+
+Судя по площади под кривой, мы получили в обоих случаях чорошую прогоностическую силу модели.
 
 
 

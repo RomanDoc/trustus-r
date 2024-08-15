@@ -1,6 +1,7 @@
 setwd('/Users/yadonistroman/Documents/GitHub/trustus-r/data')
 library(tidyverse)
 library(readxl)
+library(stargazer)
 df <- read_excel('total.xlsx')
 
 # добавим столбец сезон
@@ -63,9 +64,6 @@ mod_lreg_ipot <- glm(data = df, `Ипотечые сделки dummy` ~ `Сре�
 summary(mod_lreg_ipot)
 exp(coef(mod_lreg_ipot))
 
-
-install.packages('stargazer')
-
 stargazer(mod_lreg_ipot)
 
 
@@ -73,3 +71,8 @@ small <- df[, c(6, 7, 8)]
 cor(small)
 fitted_v <- mod_lreg_online$fitted.values
 print(fitted_v)
+summary(fitted_v)
+install.packages('pROC')
+library(pROC)
+roc_onlin <- roc(df$`Ипотечые сделки dummy` ~ mod_lreg_ipot$fitted.values)
+roc_onlin$auc
