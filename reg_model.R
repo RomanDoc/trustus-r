@@ -72,7 +72,58 @@ cor(small)
 fitted_v <- mod_lreg_online$fitted.values
 print(fitted_v)
 summary(fitted_v)
-install.packages('pROC')
 library(pROC)
 roc_onlin <- roc(df$`Ипотечые сделки dummy` ~ mod_lreg_ipot$fitted.values)
 roc_onlin$auc
+
+
+
+
+
+library(lmtest)
+library(sandwich)
+
+testcoef_pa <- coeftest(mod_reg_pa, vcov = vcovHC(mod_reg_pa, type = 'HC0'))
+confint(testcoef_pa)
+coefci(mod_reg_pa)
+
+
+# добавим в датафрейм данные с остатками и предсказанными значениями
+df$fitted_pa <- mod_reg_pa$fitted.values
+df$residuals_pa <- mod_reg_pa$residuals
+
+df$fitted_bp <- mod_reg_bp$fitted.values
+df$residuals_bp <- mod_reg_bp$residuals
+
+ggplot(data = df, aes(x = fitted_pa, y = residuals_pa)) + 
+  geom_point() + 
+  geom_hline(yintercept = 0, color = 'red') +
+  theme_bw() +
+  ggtitle('Индекс покупательской активности') +
+  ylab('Остатки') +
+  xlab('Предсказанные значения')
+
+ggplot(data = df, aes(x = fitted_bp, y = residuals_bp)) + 
+  geom_point() + 
+  geom_hline(yintercept = 0, color = 'red') +
+  theme_bw() +
+  ggtitle('Индекс безналичных платежей') +
+  ylab('Остатки') +
+  xlab('Предсказанные значения')
+
+summary(mod_reg_pa)
+coeftest(mod_reg_pa, vcov = vcovHC(mod_reg_pa, type = 'HC0'))
+
+testcoef_pa
+
+cbind(coeftest(mod_reg_pa), coefci(mod_reg_pa))
+cbind(coeftest(mod_reg_pa), confint(mod_reg_pa))
+
+install.packages("broom")
+library(broom)
+
+tidy(mod_reg_pa, conf.int = TRUE)
+
+
+
+
