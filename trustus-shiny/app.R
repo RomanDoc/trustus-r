@@ -8,6 +8,12 @@
 #
 
 library(shiny)
+library(tidyverse)
+library(readxl)
+
+setwd('/Users/yadonistroman/Documents/GitHub/trustus-r/data')
+
+df <- read_excel('total.xlsx')
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -18,14 +24,21 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins 
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30), 
             selectInput("region",
                         "Регион:",
-                        choices = )
+                        choices = c('Россия', unique(df[, 'Регион']))),
+            selectInput('indicator',
+                        'Показатель:',
+                        choices =  c(`Доля сделок по ипотеке, вторичка` = 16,
+                                     `Доля сделок по ипотеке, первичка` = 15,
+                                     `Индекс БП` = 8,
+                                     `Индекс ПА` = 9,
+                                     `Количество ВТ` = 10,
+                                     `Онлайн-заявки на кредит` = 12,
+                                     `Офлайн-заявки на кредит` = 13,
+                                     `Среднемесячная з.п.` = 6,
+                                     `Уровень безработицы` = 7,
+                                     `Число абонентов` = 5))
         ),
 
         # Show a plot of the generated distribution
