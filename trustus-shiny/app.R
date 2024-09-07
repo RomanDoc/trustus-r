@@ -38,7 +38,12 @@ ui <- fluidPage(
                                      `Офлайн-заявки на кредит` = 13,
                                      `Среднемесячная з.п.` = 6,
                                      `Уровень безработицы` = 7,
-                                     `Число абонентов` = 5))
+                                     `Число абонентов` = 5)),
+            radioButtons('visual',
+                         'Режим визуализации:',
+                         choices = c(`распределения показателя` = 'box_plot',
+                                     `динамика показателя` = 'line_plot')),
+            textInput('color', 'Введите цвет:', 'grey')
         ),
 
         # Show a plot of the generated distribution
@@ -48,19 +53,14 @@ ui <- fluidPage(
     )
 )
 
-# Define server logic required to draw a histogram
 server <- function(input, output) {
-
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white',
-             xlab = 'Waiting time to next eruption (in mins)',
-             main = 'Histogram of waiting times')
-    })
+  output$distPlot <- renderPlot({
+    if (input$visual == 'boxp_lot') {
+      x <- df[, as.integer(input$indicator)]
+      y <- df[df$Регион == input$region, ]
+      boxplot(x, y, col = input$color)
+    }
+  })
 }
 
 # Run the application 
