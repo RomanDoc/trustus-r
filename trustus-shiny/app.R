@@ -31,9 +31,9 @@ ui <- fluidPage(
                         'Показатель:',
                         choices =  c(`Доля сделок по ипотеке, вторичка` = 16,
                                      `Доля сделок по ипотеке, первичка` = 15,
-                                     `Индекс БП` = 8,
-                                     `Индекс ПА` = 9,
-                                     `Количество ВТ` = 10,
+                                     `Индекс безналичных платежей` = 8,
+                                     `Индекс покупательской активности` = 9,
+                                     `Количество внутренних туристов` = 10,
                                      `Онлайн-заявки на кредит` = 12,
                                      `Офлайн-заявки на кредит` = 13,
                                      `Среднемесячная з.п.` = 6,
@@ -48,17 +48,20 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-           plotOutput("distPlot")
+           plotOutput('distPlot')
         )
     )
 )
 
 server <- function(input, output) {
+  df_rus <- aggregate(cbind(`Число абонентов`, `Среднемесячная з.п.`, `Уровень безработицы`, 
+                            Индекс.БП, Индекс.ПА, Количество.ВТ, `Онлайн-заявки`, `Офлайн-заявки`, 
+                            `Доля сделок, первичка`, `Доля сделок, вторичка`)
+                      ~ Месяц, data = df, FUN = mean)
   output$distPlot <- renderPlot({
-    if (input$visual == 'boxp_lot') {
-      x <- df[, as.integer(input$indicator)]
-      y <- df[df$Регион == input$region, ]
-      boxplot(x, y, col = input$color)
+    if (input$region == 'Россия') {
+      x <- df_rus[, as.integer(input$indicator)]
+      boxplot(x, col = input$color)
     }
   })
 }
