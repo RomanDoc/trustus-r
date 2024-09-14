@@ -56,7 +56,7 @@ ui <- fluidPage(
 server <- function(input, output) {
   df_rus <- aggregate(cbind(`Число абонентов`, `Среднемесячная з.п.`, `Уровень безработицы`, 
                             Индекс.БП, Индекс.ПА, Количество.ВТ, `Онлайн-заявки`, `Офлайн-заявки`, 
-                            `Доля сделок, первичка`, `Доля сделок, вторичка`, Месяц)
+                            `Доля сделок, первичка`, `Доля сделок, вторичка`)
                       ~ Месяц, data = df, FUN = mean)
   df_region <- df %>% select(Регион, `Число абонентов`, `Среднемесячная з.п.`, `Уровень безработицы`, 
                              Индекс.БП, Индекс.ПА, Количество.ВТ, `Онлайн-заявки`, `Офлайн-заявки`, 
@@ -64,16 +64,21 @@ server <- function(input, output) {
   output$distPlot <- renderPlot({
     if (input$region == 'Россия') {
       x <- df_rus[, as.integer(input$indicator)]
-      if (input$visual == 'box_plot') {
-        boxplot(x, col = input$color)
-      } else {
-        y <- 1:12
+      y <- df_rus$Месяц
+      if (input$visual == 'line_plot') {
         plot(x, y)
+      } else {
+        boxplot(x, col = input$color)
       }
     } else {
       df_region <- df_region[df_region$Регион == input$region, ]
       x <- df_region[, as.integer(input$indicator)]
-      boxplot(x, col = input$color)
+      y <- df_region$Месяц
+      if (input$visual == 'line_plot') {
+        plot(x, y)
+      } else {
+        boxplot(x, col = input$color)
+      }
     }
   })
 }
