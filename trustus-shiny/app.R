@@ -66,7 +66,8 @@ server <- function(input, output) {
       x <- df_rus[, as.integer(input$indicator)]
       y <- df_rus$Месяц
       if (input$visual == 'line_plot') {
-        plot(x, y)
+        plot(x, y, xlab = 'Месяц', ylab = 'Показатель', col = input$color)
+        lines(x, y)
       } else {
         boxplot(x, col = input$color)
       }
@@ -75,7 +76,8 @@ server <- function(input, output) {
       x <- df_region[, as.integer(input$indicator)]
       y <- df_region$Месяц
       if (input$visual == 'line_plot') {
-        plot(x, y)
+        plot(x, y, xlab = 'Месяц', ylab = 'Показатель', col = input$color)
+        lines(x, y)
       } else {
         boxplot(x, col = input$color)
       }
