@@ -66,8 +66,7 @@ server <- function(input, output) {
       x <- df_rus[, as.integer(input$indicator)]
       y <- df_rus$Месяц
       if (input$visual == 'line_plot') {
-        plot(x, y, xlab = 'Месяц', ylab = 'Показатель', col = input$color)
-        lines(x, y)
+        ggplot(data = df_rus, aes(x = x, y = y, group = 1)) + geom_line()
       } else {
         boxplot(x, col = input$color)
       }
@@ -76,8 +75,7 @@ server <- function(input, output) {
       x <- df_region[, as.integer(input$indicator)]
       y <- df_region$Месяц
       if (input$visual == 'line_plot') {
-        plot(x, y, xlab = 'Месяц', ylab = 'Показатель', col = input$color)
-        lines(x, y)
+        ggplot(data = df_region, aes(x = x, y = y, group = 1)) + geom_line()
       } else {
         boxplot(x, col = input$color)
       }
