@@ -1,12 +1,3 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    https://shiny.posit.co/
-#
-
 library(shiny)
 library(tidyverse)
 library(readxl)
@@ -58,26 +49,39 @@ server <- function(input, output) {
                             Индекс.БП, Индекс.ПА, Количество.ВТ, `Онлайн-заявки`, `Офлайн-заявки`, 
                             `Доля сделок, первичка`, `Доля сделок, вторичка`)
                       ~ Месяц, data = df, FUN = mean)
-  df_region <- df %>% select(Регион, `Число абонентов`, `Среднемесячная з.п.`, `Уровень безработицы`, 
+  df_region <- df %>% select(Месяц, `Число абонентов`, `Среднемесячная з.п.`, `Уровень безработицы`, 
                              Индекс.БП, Индекс.ПА, Количество.ВТ, `Онлайн-заявки`, `Офлайн-заявки`, 
-                             `Доля сделок, первичка`, `Доля сделок, вторичка`, Месяц)
+                             `Доля сделок, первичка`, `Доля сделок, вторичка`, Регион)
+  df_region <- as.data.frame(df_region)
   output$distPlot <- renderPlot({
     if (input$region == 'Россия') {
-      x <- df_rus[, as.integer(input$indicator)]
-      y <- df_rus$Месяц
+      y <- df_rus[, as.integer(input$indicator)]
+      x <- df_rus$Месяц
       if (input$visual == 'line_plot') {
-        ggplot(data = df_rus, aes(x = x, y = y, group = 1)) + geom_line()
+        ggplot(data = df_rus, aes(x = x, y = y, group = 1, color = input$color)) + 
+          geom_line(size = 2) +
+          scale_color_manual(values = input$color) +
+          theme_bw() +
+          labs(title = 'График показателей по месяцам', 
+               y = 'Показатель', 
+               x = 'Месяц')
       } else {
-        boxplot(x, col = input$color)
+        boxplot(y, col = input$color)
       }
     } else {
       df_region <- df_region[df_region$Регион == input$region, ]
-      x <- df_region[, as.integer(input$indicator)]
-      y <- df_region$Месяц
+      y <- df_region[, as.integer(input$indicator)]
+      x <- df_region$Месяц
       if (input$visual == 'line_plot') {
-        ggplot(data = df_region, aes(x = x, y = y, group = 1)) + geom_line()
+        ggplot(data = df_region, aes(x = x, y = y, group = 1, color = input$color)) + 
+          geom_line(size = 2) +
+          scale_color_manual(values = input$color) +
+          theme_bw() +
+          labs(title = 'График показателей по месяцам', 
+               y = 'Показатель',
+               x = 'Месяц')
       } else {
-        boxplot(x, col = input$color)
+        boxplot(y, col = input$color)
       }
     }
   })
